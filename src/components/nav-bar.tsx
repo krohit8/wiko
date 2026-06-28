@@ -3,9 +3,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
-  NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import {
+  Show,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 export function Navbar() {
   return (
@@ -21,16 +26,21 @@ export function Navbar() {
         </div>
         <NavigationMenu>
           <NavigationMenuList className="flex items-center gap-2">
-            <NavigationMenuItem>
-              <Button asChild variant={"outline"}>
-                <Link href={"/signin"}>Sign In</Link>
-              </Button>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Button asChild>
-                <Link href={"/signup"}>Sign Up</Link>
-              </Button>
-            </NavigationMenuItem>
+            <header className="flex justify-end items-center p-4 gap-4 h-16">
+              <Show when="signed-out">
+                <SignInButton>
+                  <Button variant={"outline"}>
+                    Sign In
+                  </Button>
+                </SignInButton>
+                <SignUpButton>
+                  <Button>Sign Up</Button>
+                </SignUpButton>
+              </Show>
+              <Show when="signed-in">
+                <UserButton />
+              </Show>
+            </header>
           </NavigationMenuList>
         </NavigationMenu>
       </div>
