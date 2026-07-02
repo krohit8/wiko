@@ -5,12 +5,7 @@ import {
   NavigationMenu,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import {
-  Show,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
 export function Navbar() {
   return (
@@ -29,9 +24,7 @@ export function Navbar() {
             <header className="flex justify-end items-center p-4 gap-4 h-16">
               <Show when="signed-out">
                 <SignInButton>
-                  <Button variant={"outline"}>
-                    Sign In
-                  </Button>
+                  <Button variant={"outline"}>Sign In</Button>
                 </SignInButton>
                 <SignUpButton>
                   <Button>Sign Up</Button>
