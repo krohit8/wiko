@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { updateArticle, createArticle } from "@/app/actions/articles";
+import { useRouter } from "next/navigation";
 
 interface WikiEditorProps {
   initialTitle?: string;
@@ -33,6 +35,7 @@ export default function WikiEditor({
   isEditing = false,
   articleId,
 }: WikiEditorProps) {
+  const router = useRouter();
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [files, setFiles] = useState<File[]>([]);
@@ -81,14 +84,42 @@ export default function WikiEditor({
       articleId: isEditing ? articleId : undefined,
       data: formData,
     });
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      let finalArticleId = articleId;
 
-    setIsSubmitting(false);
-    alert(
-      `Article ${
-        isEditing ? "updated" : "created"
-      } successfully! Check console for form data.`,
-    );
+      if (isEditing) {
+        if (!articleId) {
+          alert("Error: Missing article ID for editing.");
+          setIsSubmitting(false);
+          return;
+        }
+        await updateArticle(articleId, {
+          title: formData.title,
+          content: formData.content,
+        });
+      } else {
+        const response = await createArticle({
+          title: formData.title,
+          content: formData.content,
+        });
+        
+        if (response.id) {
+          finalArticleId = String(response.id);
+        }
+      }
+      
+      if (finalArticleId) {
+        router.push(`/wiki/${finalArticleId}`);
+      } else {
+        alert("Saved successfully, but could not determine article ID to redirect.");
+      }
+      
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred while saving the article.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   const handleCancel = () => {
     const shouldLeave = window.confirm(
@@ -198,7 +229,7 @@ export default function WikiEditor({
                   <div className="space-y-2">
                     {files.map((file, index) => (
                       <div
-                        key={index}
+                        key={`${index}-${file.name}`}
                         className="flex items-center justify-between p-2 bg-muted rounded-md"
                       >
                         <div className="flex items-center space-x-2">

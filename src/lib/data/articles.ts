@@ -1,6 +1,6 @@
 import db from "@/db";
 import { articles, userSync } from "@/db/Schema";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 
 export async function getArticles(){
@@ -10,10 +10,11 @@ export async function getArticles(){
         id: articles.id,
         createdAt: articles.createdAt,
         content: articles.content,
-        author: userSync.id
+        author: userSync.name
     })
     .from(articles)
     .leftJoin(userSync,eq(articles.authorId,userSync.id))
+    .orderBy(desc(articles.updatedAt))
     return response
 }
 
@@ -24,7 +25,7 @@ export async function getArticleById(id:number){
         title: articles.title,
         createdAt: articles.createdAt,
         content: articles.content,
-        author: userSync.id,
+        author: userSync.name,
         imageUrl:articles.imageUrl
     })
     .from(articles)

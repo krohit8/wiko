@@ -11,7 +11,6 @@ import { redirect } from "next/navigation";
 export type CreateArticleInput = {
   title: string;
   content: string;
-  authorId: string;
   imageUrl?: string;
 };
 
@@ -43,6 +42,8 @@ export async function createArticle(data: CreateArticleInput) {
   })
   .returning({id:articles.id})
   const articleId = response[0]?.id
+  console.log(response,"res")
+  console.log(articleId,"aId")
   return { success: true, message: "Article create logged",id:articleId };
 }
 
