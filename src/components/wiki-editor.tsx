@@ -177,6 +177,7 @@ export default function WikiEditor({
                 className={`border rounded-md ${
                   errors.content ? "border-destructive" : ""
                 }`}
+                data-color-mode="light"
               >
                 <MDEditor
                   value={content}

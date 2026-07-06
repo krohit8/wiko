@@ -1,6 +1,8 @@
 import { WikiCard } from "@/components/wiki-card";
 import { getArticles } from "@/lib/data/articles";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const articles = await getArticles();
   return (
