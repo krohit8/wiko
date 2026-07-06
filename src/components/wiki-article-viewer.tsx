@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, ChevronRight, Edit, Home, Trash, User } from "lucide-react";
+import { Calendar, ChevronRight, Edit, Eye, Home, Trash, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -8,6 +8,8 @@ import { deleteArticleForm } from "@/app/actions/articles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { incrementPageview } from "@/app/actions/pageviews";
 
 interface ViewerArticle {
   title: string;
@@ -28,6 +30,17 @@ export default function WikiArticleViewer({
   article,
   canEdit = false,
 }: WikiArticleViewerProps) {
+
+  const [localPageviews,setLocalPageviews] = useState<number | null>(null)  
+
+  useEffect(() => {
+    async function fetchPageviews(){
+      const newCount = await incrementPageview(article.id)
+      setLocalPageviews(newCount ?? null)
+    }
+    fetchPageviews()
+  },[article.id])
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -66,6 +79,11 @@ export default function WikiArticleViewer({
             </div>
             <div className="flex items-center">
               <Badge variant="secondary">Article</Badge>
+              <div className="ml-3 flex items-center text-sm text-muted-foreground">
+                <Eye className="h-4 w-4 mr-1" />
+                <span>{localPageviews ? localPageviews : "—"}</span>
+                <span className="ml-1">views</span>
+              </div>
             </div>
           </div>
         </div>
@@ -95,12 +113,14 @@ export default function WikiArticleViewer({
         <CardContent className="pt-6">
           {article.imageUrl && (
             <div className="mb-8">
-              <div className="relative w-full h-64 md:h-80 rounded-lg overflow-hidden">
+              <div className="w-full rounded-lg overflow-hidden">
                 <Image
                   src={article.imageUrl}
                   alt={`Image for ${article.title}`}
-                  fill
-                  className="object-cover"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  className="w-full h-auto"
                   priority
                 />
               </div>
