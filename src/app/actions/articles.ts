@@ -39,6 +39,7 @@ export async function createArticle(data: CreateArticleInput) {
       slug: `${Date.now()}`,
       published: true,
       authorId: user.id,
+      imageUrl: data.imageUrl,
     })
     .returning({ id: articles.id });
   const articleId = response[0]?.id;

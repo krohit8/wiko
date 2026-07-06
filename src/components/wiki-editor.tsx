@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { updateArticle, createArticle } from "@/app/actions/articles";
+import { uploadFile } from "@/app/actions/upload";
 import { useRouter } from "next/navigation";
 
 interface WikiEditorProps {
@@ -86,6 +87,14 @@ export default function WikiEditor({
     });
     try {
       let finalArticleId = articleId;
+      let uploadedImageUrl: string | undefined = undefined;
+
+      if (files.length > 0) {
+        const uploadFormData = new FormData();
+        uploadFormData.append("files", files[0]);
+        const uploadResult = await uploadFile(uploadFormData);
+        uploadedImageUrl = uploadResult.url;
+      }
 
       if (isEditing) {
         if (!articleId) {
@@ -96,11 +105,13 @@ export default function WikiEditor({
         await updateArticle(articleId, {
           title: formData.title,
           content: formData.content,
+          ...(uploadedImageUrl && { imageUrl: uploadedImageUrl }),
         });
       } else {
         const response = await createArticle({
           title: formData.title,
           content: formData.content,
+          imageUrl: uploadedImageUrl,
         });
 
         if (response.id) {
