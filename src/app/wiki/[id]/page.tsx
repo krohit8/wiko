@@ -17,18 +17,17 @@ export default async function ViewArticlePage({
 
   let canEdit = true;
   try {
-    const user = await currentUser()
-    if(user){
-      canEdit = await authorizeUserToEditArticle(user.id,id)
+    const user = await currentUser();
+    if (user) {
+      canEdit = await authorizeUserToEditArticle(user.id, id);
     }
-    
   } catch (_err) {
     canEdit = false;
   }
- const article = await getArticleById(Number(id))
- if(!article){
-    notFound()
- }
+  const article = await getArticleById(Number(id));
+  if (!article) {
+    notFound();
+  }
 
   return <WikiArticleViewer article={article} canEdit={canEdit} />;
 }

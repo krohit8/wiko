@@ -14,7 +14,7 @@ export default async function EditArticlePage({
   params,
 }: EditArticlePageProps) {
   const { id } = await params;
-  
+
   const user = await currentUser();
   if (!user) {
     redirect("/");

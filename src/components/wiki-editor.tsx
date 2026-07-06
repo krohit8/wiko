@@ -102,18 +102,19 @@ export default function WikiEditor({
           title: formData.title,
           content: formData.content,
         });
-        
+
         if (response.id) {
           finalArticleId = String(response.id);
         }
       }
-      
+
       if (finalArticleId) {
         router.push(`/wiki/${finalArticleId}`);
       } else {
-        alert("Saved successfully, but could not determine article ID to redirect.");
+        alert(
+          "Saved successfully, but could not determine article ID to redirect.",
+        );
       }
-      
     } catch (err) {
       console.error(err);
       alert("An error occurred while saving the article.");

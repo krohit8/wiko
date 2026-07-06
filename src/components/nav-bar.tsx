@@ -31,9 +31,9 @@ export function Navbar() {
                 </SignUpButton>
               </Show>
               <Show when="signed-in">
-                 <Button asChild variant="outline">
-                    <Link href="/wiki/edit/new">New Article</Link>
-                  </Button>
+                <Button asChild variant="outline">
+                  <Link href="/wiki/edit/new">New Article</Link>
+                </Button>
                 <UserButton />
               </Show>
             </header>
